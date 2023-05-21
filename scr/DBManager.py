@@ -2,7 +2,8 @@ import psycopg2
 
 
 class DBManage:
-    """Класс  для работы с данными в БД"""
+    """Класс для работы с данными в БД"""
+
     def __init__(self):
         self.conn = psycopg2.connect(dbname="head_hanter", user="postgres", password="1", host="localhost")
         self.cur = self.conn.cursor()
@@ -28,6 +29,7 @@ class DBManage:
         """Получает список всех вакансий, в названии которых содержатся переданные
         в метод слова, например “python”"""
         pass
+
     def close_connection(self):
         """Закрытие соединения с базой данных"""
         self.cur.close()

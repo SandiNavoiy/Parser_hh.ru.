@@ -11,7 +11,8 @@ class DBManage:
 
     def create_tables(self):
         """Создание таблиц для работодателей и вакансий"""
-        self.cur.execute("CREATE TABLE employers (id SERIAL PRIMARY KEY, name VARCHAR(255), description TEXT, website VARCHAR(255))")
+        self.cur.execute("CREATE TABLE employers (id SERIAL PRIMARY KEY, name VARCHAR(255), description TEXT, "
+                         "website VARCHAR(255))")
 
 
     def get_companies_and_vacancies_count(self):

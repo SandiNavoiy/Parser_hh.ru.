@@ -8,6 +8,12 @@ class DBManage:
         self.conn = psycopg2.connect(dbname="head_hanter", user="postgres", password="1", host="localhost")
         self.cur = self.conn.cursor()
 
+
+    def create_tables(self):
+        """Создание таблиц для работодателей и вакансий"""
+        self.cur.execute("CREATE TABLE employers (id SERIAL PRIMARY KEY, name VARCHAR(255), description TEXT, website VARCHAR(255))")
+
+
     def get_companies_and_vacancies_count(self):
         """Получает список всех компаний и количество вакансий у каждой компании"""
         pass

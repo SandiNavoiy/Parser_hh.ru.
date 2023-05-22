@@ -1,55 +1,125 @@
 """Скрипт для заполнения данными таблиц в БД Postgres."""
-import csv
-import os
-import psycopg2
+from scr.hh import HeadHunterAPI
 
-def customers(file_mame):
-    """"""
-    with open(os.path.join(file_mame), 'r') as f:
-        reader = csv.reader(f)
-        next(reader)
-        conn = psycopg2.connect(dbname="head_hanter", user="postgres", password="1", host="localhost")
-        cur = conn.cursor()
-        for row in reader:
-            cur.execute("INSERT INTO customers (customer_id, company_name, contact_name) VALUES (%s, %s, %s)",
-                        (row[0], row[1], row[2]))
 
-    conn.commit()
-    cur.close()
-    conn.close()
+def welcome():
+    """Функция вывода приветствия"""
+    print("                  Доброго времени суток")
+    print("Вас приветствует программа по поиску, отбору вакансий \n"
+          "и добавление их в базу данных PostgreSQL  с сайта: hh.ru\n")
+    print("Далее будет представлено меню с возможными действиями")
+    print("В случае первого использования программы или удаления файлов hh.json \n"
+          "необходимо загрузить данные из сайта!")
+    input("Нажмите любую клавишу для продолжения..................")
 
-def employees(file_mame):
-    """"""
-    with open(os.path.join(file_mame), 'r') as f:
-        reader = csv.reader(f)
-        next(reader)
-        conn = psycopg2.connect(dbname="north", user="postgres", password="1", host="localhost")
-        cur = conn.cursor()
-        id_emp = 1
-        for row in reader:
-            cur.execute("INSERT INTO employees (id_emp, first_name, last_name, title, birth_date, notes) VALUES (%s, %s, %s, %s, %s, %s)",
-                        (id_emp, row[0], row[1], row[2], row[3], row[4]))
-            id_emp += 1
 
-    conn.commit()
-    cur.close()
-    conn.close()
 
-def orders(file_mame):
-    """"""
-    with open(os.path.join(file_mame), 'r') as f:
-        reader = csv.reader(f)
-        next(reader)
-        conn = psycopg2.connect(dbname="north", user="postgres", password="1", host="localhost")
-        cur = conn.cursor()
-        for row in reader:
-            cur.execute("INSERT INTO orders (order_id, customer_id, employee_id, order_date, ship_city) VALUES (%s, %s, %s, %s, %s)",
-                        (row[0], row[1], row[2], row[3], row[4]))
+def interact_with_user():
+    """Функция для взаимодействия с пользователем."""
+    # Инициируем обьекты классов для работы
+    hh_api = HeadHunterAPI()
 
-    conn.commit()
-    cur.close()
-    conn.close()
 
-customers("north_data/customers_data.csv")
-employees("north_data/employees_data.csv")
-orders("north_data/orders_data.csv")
+    while True:
+        # Запускаем бесконечный цикл для работы меню
+        print("Выберите действие:")
+        print("1 - Загрузить свежую информацию с hh.ru")
+
+        print(" - Просмотр файла с избранными вакансиями")
+        print(" - Вывод вакансий в упрошенном виде с сортировкой")
+        print(" - Добавление вакансии в избранное")
+        print(" - Удаление вакансии из избранного")
+        print(" - Очистка файла избранного (полная)")
+        print(" - Вывод  ТОП вакансий сортировкой")
+        print(" - Вывод  избранного в формате txt")
+        print(" - Вывод  избранного в формате xls")
+        print(" - Вывод  вакансии по id")
+        print(" - Поиск по вакансии по ключевым словам")
+        print(" - Сравнение вакансий по заработной плате")
+        print("10 - Выйти")
+        choice = input("Введите значение---")
+
+
+        # Непосредствено работы меню выбора
+        if choice == "1":
+            # Загружаем информацию с hh
+            key_words = input("Введите ключевое слово поисков:   ")
+            hh_api.get_vacancies(key_words)
+            # Сразу формируем список вакансий для работы,
+            # чтобы не прописывать в дальнейшем в каждом варианте
+
+
+        elif choice == "2":
+            # Загружаем информацию с sj
+            pass
+
+        elif choice == "3":
+            # Вывод файла с избранным
+            pass
+
+        elif choice == "4":
+            # Вывод вакансий в упрошенном виде с сортировкой
+            pass
+
+        elif choice == "5":
+            # Добавление вакансии в избранное
+            pass
+
+        elif choice == "6":
+            # Удаление вакансии из избранного
+            pass
+
+        elif choice == "7":
+            # Очистка файла избранного (полная)
+            pass
+
+        elif choice == "8":
+            # Вывод ТОП вакансий сортировкой
+            # Валидация числа ввода
+            pass
+
+        elif choice == "9":
+            # Вывод избранного в формате txt
+            pass
+
+        elif choice == "10":
+            # Вывод избранного в формате xls
+            pass
+
+        elif choice == "11":
+            # Вывод вакансии по id
+            # В связи с тем что выгруз с каждого сайта ограничен 100 вакансий,
+            # суммарно не более 200 отсекаем неверные значения ввода специальным исключением
+            pass
+
+
+        elif choice == "12":
+            # Поиск по вакансии по ключевым словам
+            pass
+
+        elif choice == "13":
+            # Сравнение вакансий по заработной плате
+            # В связи с тем что выгруз с каждого сайта ограничен 100 вакансий,
+            # суммарно не более 200 отсекаем неверные значения ввода специальным исключением
+            pass
+
+        elif choice == "10":
+            # Выход
+            print("--------------")
+            print("Спасибо за обращение\n"
+                  "До новых встреч!")
+            print("--------------")
+            break
+
+        else:
+            print("Введите правильное значение действий!!!!")
+
+
+
+
+
+
+
+
+
+

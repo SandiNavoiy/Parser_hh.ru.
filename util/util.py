@@ -1,5 +1,8 @@
 """Скрипт для заполнения данными таблиц в БД Postgres."""
+from configparser import ConfigParser
+
 from scr.hh import HeadHunterAPI
+from scr.DBManager import DBManage
 
 
 def welcome():
@@ -18,6 +21,9 @@ def interact_with_user():
     """Функция для взаимодействия с пользователем."""
     # Инициируем обьекты классов для работы
     hh_api = HeadHunterAPI()
+    params = config()
+    db_manager = DBManage('hh', params)
+
 
 
     while True:
@@ -25,7 +31,7 @@ def interact_with_user():
         print("Выберите действие:")
         print("1 - Загрузить свежую информацию с hh.ru")
 
-        print(" - Просмотр файла с избранными вакансиями")
+        print("2 - Создание базы данных ")
         print(" - Вывод вакансий в упрошенном виде с сортировкой")
         print(" - Добавление вакансии в избранное")
         print(" - Удаление вакансии из избранного")
@@ -50,8 +56,10 @@ def interact_with_user():
 
 
         elif choice == "2":
-            # Загружаем информацию с sj
-            pass
+            # создаеем базу данных
+
+            db_manager.create_database()
+            db_manager.create_tables()
 
         elif choice == "3":
             # Вывод файла с избранным
@@ -80,10 +88,6 @@ def interact_with_user():
 
         elif choice == "9":
             # Вывод избранного в формате txt
-            pass
-
-        elif choice == "10":
-            # Вывод избранного в формате xls
             pass
 
         elif choice == "11":
@@ -117,6 +121,21 @@ def interact_with_user():
 
 
 
+def config(filename="database.ini", section="postgresql"):
+    """Словарь с данными для подключения к БД """
+    # создаем парсер
+    parser = ConfigParser()
+    # читаем конфиг файл
+    parser.read(filename)
+    db = {}
+    if parser.has_section(section):
+        params = parser.items(section)
+        for param in params:
+            db[param[0]] = param[1]
+    else:
+        raise Exception(
+            'Section {0} is not found in the {1} file.'.format(section, filename))
+    return db
 
 
 

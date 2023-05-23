@@ -4,16 +4,31 @@ import psycopg2
 class DBManage:
     """Класс для работы с данными в БД"""
 
-    def __init__(self):
-        self.conn = psycopg2.connect(dbname="head_hanter", user="postgres", password="1", host="localhost")
-        self.cur = self.conn.cursor()
+    def __init__(self, database_name: str, params: dict):
+        self.database_name = database_name
+        self.params = params
 
+    def create_database(self):
+        """Создание базы данных """
+        conn = psycopg2.connect(dbname='postgres', **self.params)
+        conn.autocommit = True
+        cur = conn.cursor()
+        cur.execute(f"DROP DATABASE  IF EXISTS {self.database_name}")
+        cur.execute(f"CREATE DATABASE {self.database_name}")
+        conn.close()
 
     def create_tables(self):
         """Создание таблиц для работодателей и вакансий"""
-        self.cur.execute("CREATE TABLE employers (id SERIAL PRIMARY KEY, name VARCHAR(255), description TEXT, "
-                         "website VARCHAR(255))")
-
+        conn = psycopg2.connect(dbname=self.database_name, **self.params)
+        conn.autocommit = True
+        cur = conn.cursor()
+        cur.execute("CREATE TABLE employers (id SERIAL PRIMARY KEY, name VARCHAR(255), description TEXT, "
+                    "website VARCHAR(255))")
+        cur.execute(
+            "CREATE TABLE IF NOT EXISTS vacancies (id SERIAL PRIMARY KEY, "
+            "employer_id INTEGER, title VARCHAR(255), salary VARCHAR(50), link VARCHAR(255), "
+            "FOREIGN KEY (employer_id) REFERENCES employers (id))")
+        conn.close()
 
     def get_companies_and_vacancies_count(self):
         """Получает список всех компаний и количество вакансий у каждой компании"""

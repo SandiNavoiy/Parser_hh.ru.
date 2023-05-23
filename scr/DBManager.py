@@ -22,12 +22,18 @@ class DBManage:
         conn = psycopg2.connect(dbname=self.database_name, **self.params)
         conn.autocommit = True
         cur = conn.cursor()
-        cur.execute("CREATE TABLE employers (id SERIAL PRIMARY KEY, name VARCHAR(255), description TEXT, "
+        cur.execute("CREATE TABLE employers "
+                    "(id SERIAL PRIMARY KEY, "
+                    "name VARCHAR(255), "
+                    "description TEXT, "
                     "website VARCHAR(255))")
-        cur.execute(
-            "CREATE TABLE IF NOT EXISTS vacancies (id SERIAL PRIMARY KEY, "
-            "employer_id INTEGER, title VARCHAR(255), salary VARCHAR(50), link VARCHAR(255), "
-            "FOREIGN KEY (employer_id) REFERENCES employers (id))")
+        cur.execute("CREATE TABLE IF NOT EXISTS vacancies "
+                    "(id SERIAL PRIMARY KEY, "
+                    "employer_id INTEGER,"
+                    "title VARCHAR(255), "
+                    "salary VARCHAR(50), "
+                    "link VARCHAR(255), "
+                    "FOREIGN KEY (employer_id) REFERENCES employers (id))")
         conn.close()
 
     def get_companies_and_vacancies_count(self):

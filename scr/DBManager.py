@@ -7,8 +7,7 @@ class DBManage:
     def __init__(self, database_name: str, params: dict):
         self.database_name = database_name
         self.params = params
-        self.conn = psycopg2.connect(dbname=database_name, **self.params)
-
+        self.conn = psycopg2.connect(dbname=self.database_name, **self.params)
         self.cur = self.conn.cursor()
 
     def connect_to_database(self):
@@ -173,5 +172,6 @@ class DBManage:
 
     def close_connection(self):
         """Закрытие соединения с базой данных"""
-        self.cur.close()
-        self.conn.close()
+        self.connect_to_database()
+        #self.cur.close()
+        #self.conn.close()

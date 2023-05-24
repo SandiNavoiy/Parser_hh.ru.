@@ -8,6 +8,7 @@ class DBManage:
         self.database_name = database_name
         self.params = params
 
+
     def create_database(self):
         """Создание базы данных """
         conn = psycopg2.connect(dbname='postgres', **self.params)

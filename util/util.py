@@ -58,8 +58,11 @@ def interact_with_user():
         elif choice == "2":
             # создаеем базу данных
 
+
             db_manager.create_database()
+            db_manager.close_connection()
             db_manager.create_tables()
+            db_manager.close_connection()
 
         elif choice == "3":
             # Вывод файла с избранным

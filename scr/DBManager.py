@@ -177,5 +177,5 @@ class DBManage:
     def close_connection(self):
         """Закрытие соединения с базой данных"""
         self.connect_to_database()
-        # self.cur.close()
-        # self.conn.close()
+        self.cur.close()
+        self.conn.close()

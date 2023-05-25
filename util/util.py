@@ -1,5 +1,8 @@
 """Скрипт для заполнения данными таблиц в БД Postgres."""
+import json
 from configparser import ConfigParser
+
+import psycopg2
 
 from scr.hh import HeadHunterAPI
 from scr.DBManager import DBManage
@@ -23,82 +26,86 @@ def interact_with_user():
     hh_api = HeadHunterAPI()
     params = config()
     name_db = 'hh'
-    db_manager = DBManage('name_db', params)
+    try:
+        db_manager = DBManage(name_db, params)
+    except psycopg2.OperationalError:
+        print("Ошибка подключенния к базе данных")
+    else:
 
 
 
-    while True:
-        # Запускаем бесконечный цикл для работы меню
-        print("Выберите действие:")
-        print("1 - Загрузить свежую информацию с hh.ru")
-        print("2 - Создание базы данных ")
-        print(" - Вывод вакансий в упрошенном виде с сортировкой")
-        print(" - Добавление вакансии в избранное")
-        print(" - Удаление вакансии из избранного")
-        print("10 - Выйти")
-        choice = input("Введите значение---")
+        while True:
+            # Запускаем бесконечный цикл для работы меню
+            print("Выберите действие:")
+            print("1 - Загрузить свежую информацию с hh.ru")
+            print("2 - Создание базы данных ")
+            print(" - Вывод вакансий в упрошенном виде с сортировкой")
+            print(" - Добавление вакансии в избранное")
+            print(" - Удаление вакансии из избранного")
+            print("10 - Выйти")
+            choice = input("Введите значение---")
 
 
-        # Непосредствено работы меню выбора
-        if choice == "1":
-            # Загружаем информацию с hh
-            key_words = input("Введите ключевое слово поисков:   ")
-            hh_api.get_vacancies(key_words)
-            # Сразу формируем список вакансий для работы,
-            # чтобы не прописывать в дальнейшем в каждом варианте
+            # Непосредствено работы меню выбора
+            if choice == "1":
+                # Загружаем информацию с hh
+                key_words = input("Введите ключевое слово поисков:   ")
+                hh_api.get_vacancies(key_words)
+                # Сразу формируем список вакансий для работы,
+                # чтобы не прописывать в дальнейшем в каждом варианте
 
 
-        elif choice == "2":
-            # создаеем базу данных и таблицы
-            db_manager.create_database()
-            db_manager.create_tables()
-            print(f"База данных {name_db} и таблицы employers и vacancies созданны")
+            elif choice == "2":
+                # создаеем базу данных и таблицы
+                db_manager.create_database()
+                db_manager.create_tables()
+                print(f"База данных {name_db} и таблицы employers и vacancies созданны")
 
 
 
 
-        elif choice == "3":
-            # Вывод файла с избранным
-            pass
+            elif choice == "3":
+                # Вывод файла с избранным
+                pass
 
-        elif choice == "4":
-            # Вывод вакансий в упрошенном виде с сортировкой
-            pass
+            elif choice == "4":
+                # Вывод вакансий в упрошенном виде с сортировкой
+                pass
 
-        elif choice == "5":
-            # Добавление вакансии в избранное
-            pass
+            elif choice == "5":
+                # Добавление вакансии в избранное
+                pass
 
-        elif choice == "6":
-            # Удаление вакансии из избранного
-            pass
+            elif choice == "6":
+                # Удаление вакансии из избранного
+                pass
 
-        elif choice == "7":
-            # Очистка файла избранного (полная)
-            pass
+            elif choice == "7":
+                # Очистка файла избранного (полная)
+                pass
 
-        elif choice == "8":
-            # Вывод ТОП вакансий сортировкой
-            # Валидация числа ввода
-            pass
+            elif choice == "8":
+                # Вывод ТОП вакансий сортировкой
+                # Валидация числа ввода
+                pass
 
-        elif choice == "9":
-            # Вывод избранного в формате txt
-            pass
+            elif choice == "9":
+                # Вывод избранного в формате txt
+                pass
 
 
-        elif choice == "10":
-            # Выход
-            db_manager.close_connection()
-            print("--------------")
-            print("Спасибо за обращение\n"
-                  "До новых встреч!")
-            print("--------------")
+            elif choice == "10":
+                # Выход
+                db_manager.close_connection()
+                print("--------------")
+                print("Спасибо за обращение\n"
+                      "До новых встреч!")
+                print("--------------")
 
-            break
+                break
 
-        else:
-            print("Введите правильное значение действий!!!!")
+            else:
+                print("Введите правильное значение действий!!!!")
 
 
 
@@ -118,6 +125,12 @@ def config(filename="database.ini", section="postgresql"):
         raise Exception(
             'Section {0} is not found in the {1} file.'.format(section, filename))
     return db
+
+def json_reader(path_to_file: str) -> dict:
+    """    Читает данные из json файла"""
+    with open(path_to_file, 'r') as file:
+        data = json.load(file)
+    return data
 
 
 

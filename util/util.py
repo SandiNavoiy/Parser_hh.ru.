@@ -39,10 +39,12 @@ def interact_with_user():
             print("Выберите действие:")
             print("1 - Загрузить свежую информацию с hh.ru")
             print("2 - Создание базы данных ")
-            print(" - Вывод вакансий в упрошенном виде с сортировкой")
-            print(" - Добавление вакансии в избранное")
-            print(" - Удаление вакансии из избранного")
-            print("10 - Выйти")
+            print("3 - Заполняем таблицы данными")
+            print("4 - Вывод всех вакансий")
+            print("5 - Вывод средней залплаты")
+            print("6 - Список всех вакансий, у которых зарплата выше средней по всем вакансиям")
+            print("7 - Вывод списка всех вакансий, в названии которых содержатся ключевое слово")
+            print("8 - Выйти")
             choice = input("Введите значение---")
 
 
@@ -56,53 +58,59 @@ def interact_with_user():
 
 
             elif choice == "2":
-                # создаеем базу данных и таблицы
+                # создаем базу данных и таблицы
                 db_manager.create_database()
                 db_manager.create_tables()
-                print(f"База данных {name_db} и таблицы employers и vacancies созданны")
-
-
+                print(f"База данных {name_db} и таблицы employers и vacancies созданы")
 
 
             elif choice == "3":
-                # Вывод файла с избранным
-                pass
+                # Заполняем таблицы данными
+                data = json_reader()
+                for item in data['items']:
+                    employer = item['employer']
+                    employer_name = employer['name']
+                    employer_description = employer['description']
+                    employer_website = employer['alternate_url']
+                    employer_id = db_manager.insert_employer(employer_name, employer_description, employer_website)
+
+                    vacancy = item['name']
+                    vacancy_salary = item['salary']
+                    vacancy_link = item['alternate_url']
+
+                    db_manager.insert_vacancy(employer_id, vacancy, vacancy_salary, vacancy_link)
+
 
             elif choice == "4":
                 # Вывод вакансий в упрошенном виде с сортировкой
-                pass
+                db_manager.get_all_vacancies()
+
 
             elif choice == "5":
-                # Добавление вакансии в избранное
-                pass
+                # Средняя залплата по вакансиям
+                db_manager.get_avg_salary
+
 
             elif choice == "6":
-                # Удаление вакансии из избранного
-                pass
+                #список всех вакансий, у которых зарплата выше средней по всем вакансиям
+                db_manager.get_vacancies_with_higher_salary()
+
 
             elif choice == "7":
-                # Очистка файла избранного (полная)
-                pass
+                # Вывод списка всех вакансий, в названии которых содержатся ключевое слово
+                keyword =  input("Введите ключевое слово")
+                db_manager.get_vacancies_with_keyword(keyword)
+
 
             elif choice == "8":
-                # Вывод ТОП вакансий сортировкой
-                # Валидация числа ввода
-                pass
-
-            elif choice == "9":
-                # Вывод избранного в формате txt
-                pass
-
-
-            elif choice == "10":
                 # Выход
                 db_manager.close_connection()
                 print("--------------")
                 print("Спасибо за обращение\n"
                       "До новых встреч!")
                 print("--------------")
-
                 break
+
 
             else:
                 print("Введите правильное значение действий!!!!")
@@ -126,13 +134,11 @@ def config(filename="database.ini", section="postgresql"):
             'Section {0} is not found in the {1} file.'.format(section, filename))
     return db
 
-def json_reader(path_to_file: str) -> dict:
+def json_reader():
     """    Читает данные из json файла"""
-    with open(path_to_file, 'r') as file:
+    with open("hh.json", 'r') as file:
         data = json.load(file)
     return data
-
-
 
 
 

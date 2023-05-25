@@ -70,6 +70,7 @@ class DBManage:
     def insert_vacancy(self, employer_id, title, salary, link):
         """Вставка данных о вакансии в таблицу vacancies"""
         # conn = psycopg2.connect(dbname=self.database_name, **self.params)
+        self.connect_to_database()
         self.conn.autocommit = True
         # cur = conn.cursor()
         self.cur.execute(
@@ -84,6 +85,7 @@ class DBManage:
     def get_companies_and_vacancies_count(self):
         """Получает список всех компаний и количество вакансий у каждой компании"""
         # conn = psycopg2.connect(dbname=self.database_name, **self.params)
+        self.connect_to_database()
         self.conn.autocommit = True
         # cur = conn.cursor()
         self.cur.execute(
@@ -102,6 +104,7 @@ class DBManage:
         """Получает список всех вакансий с указанием
           названия компании, названия вакансии и зарплаты и ссылки на вакансию"""
         # conn = psycopg2.connect(dbname=self.database_name, **self.params)
+        self.connect_to_database()
         self.conn.autocommit = True
         # cur = conn.cursor()
         self.cur.execute(
@@ -118,6 +121,7 @@ class DBManage:
     def get_avg_salary(self):
         """Получает среднюю зарплату по вакансиям."""
         # conn = psycopg2.connect(dbname=self.database_name, **self.params)
+        self.connect_to_database()
         self.conn.autocommit = True
         # cur = conn.cursor()
         self.cur.execute(
@@ -132,6 +136,7 @@ class DBManage:
 
     def get_vacancies_with_higher_salary(self):
         """Получает список всех вакансий, у которых зарплата выше средней по всем вакансиям"""
+        self.connect_to_database()
         avg_salary = self.get_avg_salary()
         # conn = psycopg2.connect(dbname=self.database_name, **self.params)
         self.conn.autocommit = True
@@ -151,11 +156,12 @@ class DBManage:
 
     def get_vacancies_with_keyword(self, keyword):
         """Получает список всех вакансий, в названии которых содержатся переданные
-        в метод слова, например “python”"""
-        conn = psycopg2.connect(dbname=self.database_name, **self.params)
-        conn.autocommit = True
-        cur = conn.cursor()
-        cur.execute(
+        в метод слова"""
+        self.connect_to_database()
+        #conn = psycopg2.connect(dbname=self.database_name, **self.params)
+        self.conn.autocommit = True
+        #cur = conn.cursor()
+        self.cur.execute(
             """
             SELECT employers.name, vacancies.title, vacancies.salary, vacancies.link
             FROM vacancies
@@ -164,8 +170,8 @@ class DBManage:
             """,
             ('%' + keyword + '%',)
         )
-        result = cur.fetchall()
-        conn.close()
+        result = self.cur.fetchall()
+        #conn.close()
         return result
 
     def close_connection(self):

@@ -11,38 +11,33 @@ class DBManage:
         self.cur = self.conn.cursor()
 
     def connect_to_database(self):
-        """Переподключение к базе данных"""
+        """Переподключение к базе данных, чтоб не писать одно и тоже"""
         self.conn.close()
         self.conn = psycopg2.connect(dbname=self.database_name, **self.params)
         self.conn.autocommit = True
         self.cur = self.conn.cursor()
 
     def create_database(self):
-        """Создание базы данных """
+        """Создание базы данных или удаление текущей"""
         self.conn.close()  # Закрыть текущее соединение
-
         # Создать новое соединение для выполнения операций создания и удаления базы данных
         conn_temp = psycopg2.connect(dbname='postgres', **self.params)
         conn_temp.autocommit = True
         cur_temp = conn_temp.cursor()
-
         # Удалить базу данных, если она существует
         cur_temp.execute(f"DROP DATABASE IF EXISTS {self.database_name}")
         # Создать базу данных
         cur_temp.execute(f"CREATE DATABASE {self.database_name}")
-
         # Закрыть временное соединение
         cur_temp.close()
         conn_temp.close()
-
         # Подключиться заново к базе данных
         self.connect_to_database()
-
-
 
     def create_tables(self):
         """Создание таблиц для работодателей и вакансий"""
         self.connect_to_database()
+        # Запрос SQL
         self.cur.execute("CREATE TABLE IF NOT EXISTS employers "
                          "(id SERIAL PRIMARY KEY, "
                          "name VARCHAR(255), "
@@ -59,7 +54,7 @@ class DBManage:
     def insert_employer(self, name, description, website):
         """"Вставка данных о работодателе в таблицу employers"""
         self.connect_to_database()
-        # self.conn.autocommit = True
+        # Запрос SQL
         self.cur.execute(
             """
             INSERT INTO employers (name, description, website)
@@ -74,7 +69,7 @@ class DBManage:
     def insert_vacancy(self, employer_id, title, salary, link):
         """Вставка данных о вакансии в таблицу vacancies"""
         self.connect_to_database()
-        # self.conn.autocommit = True
+        # Запрос SQL
         self.cur.execute(
             """
             INSERT INTO vacancies (employer_id, title, salary, link)
@@ -86,7 +81,7 @@ class DBManage:
     def get_companies_and_vacancies_count(self):
         """Получает список всех компаний и количество вакансий у каждой компании"""
         self.connect_to_database()
-        # self.conn.autocommit = True
+        # Запрос SQL
         self.cur.execute(
             """
             SELECT employers.name, COUNT(vacancies.id)
@@ -102,7 +97,7 @@ class DBManage:
         """Получает список всех вакансий с указанием
           названия компании, названия вакансии и зарплаты и ссылки на вакансию"""
         self.connect_to_database()
-        # self.conn.autocommit = True
+        # Запрос SQL
         self.cur.execute(
             """
             SELECT employers.name, vacancies.title, vacancies.salary, vacancies.link
@@ -111,13 +106,12 @@ class DBManage:
             """
         )
         result = self.cur.fetchall()
-        # conn.close()
         return result
 
     def get_avg_salary(self):
         """Получает среднюю зарплату по вакансиям."""
         self.connect_to_database()
-        # self.conn.autocommit = True
+        # Запрос SQL
         self.cur.execute(
             """
             SELECT ROUND(AVG(salary)) 
@@ -132,7 +126,7 @@ class DBManage:
         """Получает список всех вакансий, у которых зарплата выше средней по всем вакансиям"""
         self.connect_to_database()
         avg_salary = self.get_avg_salary()
-        # self.conn.autocommit = True
+        # Запрос SQL
         self.cur.execute(
             """
             SELECT employers.name, vacancies.title, vacancies.salary, vacancies.link
@@ -149,7 +143,7 @@ class DBManage:
         """Получает список всех вакансий, в названии которых содержатся переданные
         в метод слова"""
         self.connect_to_database()
-        # self.conn.autocommit = True
+        # Запрос SQL
         self.cur.execute(
             """
             SELECT employers.name, vacancies.title, vacancies.salary, vacancies.link
@@ -165,7 +159,7 @@ class DBManage:
     def error_table(self):
         """Отлов ошибки отсудствия таблиц, чтоб не ломать код"""
         self.connect_to_database()
-
+        # Запрос SQL
         self.cur.execute(
             """
             SELECT * 

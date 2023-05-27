@@ -17,7 +17,7 @@ class HeadHunterAPI(Employer):
         self.text = text
         params = {
             'text': self.text,  # Текст фильтра.
-            'area': 1
+            'area': 1,
             'per_page': 100  # Кол-во вакансий на 1 странице
         }
         try:

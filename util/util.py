@@ -83,14 +83,15 @@ def interact_with_user():
                         print("Нет таблиц, создайте - пункт 2")
                     else:
                         for item in data['items']:
+                            employer_id = item['id']
                             employer_name = item['employer']['name']
-                            employer_description = item['employer']['name']
+                            employer_description = item['area']['name']
                             employer_website = item['employer']['alternate_url']
                             # Грузим в БД в таблицу employer
-                            employer_id = db_manager.insert_employer(employer_name, employer_description,
+                            db_manager.insert_employer(employer_id, employer_name, employer_description,
                                                                      employer_website)
-
                             vacancy = item['name']
+                            vacancy_id = item['id']
                             try:
                                 # Заполняем и проверяем случай если з/п не указана
                                 vacancy_salary = int(item['salary']['from'])
@@ -98,7 +99,7 @@ def interact_with_user():
                                 vacancy_salary = 0
                             vacancy_link = item['alternate_url']
                             # Грузим в БД в таблицу vacancy
-                        db_manager.insert_vacancy(employer_id, vacancy, vacancy_salary, vacancy_link)
+                            db_manager.insert_vacancy(vacancy_id, employer_id, vacancy, vacancy_salary, vacancy_link)
                     print("Таблицы успешно заполнены")
 
 
@@ -171,7 +172,7 @@ def interact_with_user():
                     vacancies_with_keyword = db_manager.get_vacancies_with_keyword(keyword)
                     # Отрабатываем случай если в таблице нет данных
                     if vacancies_with_keyword == []:
-                        print("Нет таблиц, создайте - пункт 2")
+                        print("Нет таблиц, создайте - пункт 2 или нет соответсвий")
                     else:
                         for company, title, salary, link in vacancies_with_keyword:
                             print(f"Работодатель: {company}")
@@ -190,7 +191,7 @@ def interact_with_user():
                 else:
                     companies_and_vacancies_count = db_manager.get_companies_and_vacancies_count()
                     # Отрабатываем случай если в таблице нет данных
-                    if vacancies_with_keyword == []:
+                    if companies_and_vacancies_count == []:
                         print("Нет таблиц, создайте - пункт 2")
                     else:
                         print("Компания и количество вакансий:")

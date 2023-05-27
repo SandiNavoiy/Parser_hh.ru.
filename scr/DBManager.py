@@ -39,43 +39,44 @@ class DBManage:
         self.connect_to_database()
         # Запрос SQL
         self.cur.execute("CREATE TABLE IF NOT EXISTS employers "
-                         "(id SERIAL PRIMARY KEY, "
+                         "(employer_id INTEGER PRIMARY KEY, "
                          "name VARCHAR(255), "
-                         "description TEXT, "
+                         "employer_city TEXT, "
                          "website VARCHAR(255))")
         self.cur.execute("CREATE TABLE IF NOT EXISTS vacancies "
-                         "(id SERIAL PRIMARY KEY, "
+                         "(vacancy_id varchar(10) PRIMARY KEY, "
                          "employer_id INTEGER,"
                          "title VARCHAR(255), "
                          "salary INTEGER, "
                          "link VARCHAR(255), "
-                         "FOREIGN KEY (employer_id) REFERENCES employers (id))")
+                         "FOREIGN KEY (employer_id) REFERENCES employers (employer_id))")
 
-    def insert_employer(self, name, description, website):
+    def insert_employer(self, employer_id, name, description, website):
         """"Вставка данных о работодателе в таблицу employers"""
         self.connect_to_database()
         # Запрос SQL
+        #RETURNING id
         self.cur.execute(
             """
-            INSERT INTO employers (name, description, website)
-            VALUES (%s, %s, %s)
-            RETURNING id
+            INSERT INTO employers (employer_id, name, employer_city, website)
+            VALUES (%s, %s, %s, %s)
+            
             """,
-            (name, description, website)
+            (employer_id, name, description, website)
         )
-        employer_id = self.cur.fetchone()[0]
-        return employer_id
+        #employer_id = self.cur.fetchone()[0]
+        #return employer_id
 
-    def insert_vacancy(self, employer_id, title, salary, link):
+    def insert_vacancy(self, vacancy_id, employer_id, title, salary, link):
         """Вставка данных о вакансии в таблицу vacancies"""
         self.connect_to_database()
         # Запрос SQL
         self.cur.execute(
             """
-            INSERT INTO vacancies (employer_id, title, salary, link)
-            VALUES (%s, %s, %s, %s)
+            INSERT INTO vacancies (vacancy_id, employer_id, title, salary, link)
+            VALUES (%s, %s, %s, %s, %s)
             """,
-            (employer_id, title, salary, link)
+            (vacancy_id, employer_id, title, salary, link)
         )
 
     def get_companies_and_vacancies_count(self):
@@ -84,9 +85,9 @@ class DBManage:
         # Запрос SQL
         self.cur.execute(
             """
-            SELECT employers.name, COUNT(vacancies.id)
+            SELECT employers.name, COUNT(vacancy_id)
             FROM employers
-            LEFT JOIN vacancies ON employers.id = vacancies.employer_id
+            LEFT JOIN vacancies USING(employer_id)
             GROUP BY employers.name
             """
         )
@@ -102,7 +103,7 @@ class DBManage:
             """
             SELECT employers.name, vacancies.title, vacancies.salary, vacancies.link
             FROM vacancies
-            INNER JOIN employers ON vacancies.employer_id = employers.id
+            INNER JOIN employers USING(employer_id)
             """
         )
         result = self.cur.fetchall()
@@ -131,7 +132,7 @@ class DBManage:
             """
             SELECT employers.name, vacancies.title, vacancies.salary, vacancies.link
             FROM vacancies
-            INNER JOIN employers ON vacancies.employer_id = employers.id
+            INNER JOIN employers USING(employer_id)
             WHERE vacancies.salary > %s
             """,
             (avg_salary,)
@@ -148,7 +149,7 @@ class DBManage:
             """
             SELECT employers.name, vacancies.title, vacancies.salary, vacancies.link
             FROM vacancies
-            INNER JOIN employers ON vacancies.employer_id = employers.id
+            INNER JOIN employers USING(employer_id)
             WHERE vacancies.title ILIKE %s
             """,
             ('%' + keyword + '%',)

@@ -41,11 +41,12 @@ class DBManager:
 
     def insert_employer(self, name, description, website):
         # Вставка данных о работодателе в таблицу employers
+        #RETURNING id
         self.cur.execute(
             """
             INSERT INTO employers (name, description, website)
             VALUES (%s, %s, %s)
-            RETURNING id
+            
             """,
             (name, description, website)
         )

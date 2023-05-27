@@ -1,4 +1,23 @@
----insert_employer:
+---def create_database(params: dict):
+CREATE DATABASE hh
+
+---def create_tables(self):
+---Создание таблиц для работодателей и вакансий
+CREATE TABLE IF NOT EXISTS employers
+                         (employer_id INTEGER PRIMARY KEY,
+                         name VARCHAR(255),
+                         employer_city TEXT,
+                         website VARCHAR(255)))
+CREATE TABLE IF NOT EXISTS vacancies
+                         (vacancy_id varchar(10) PRIMARY KEY,
+                         employer_id INTEGER,
+                         title VARCHAR(255),
+                         salary INTEGER,
+                         link VARCHAR(255),
+                         FOREIGN KEY (employer_id) REFERENCES employers (employer_id)))
+
+
+---def insert_employer:
 ---Вставка данных о работодателе в таблицу employers"""
 INSERT INTO employers (employer_id, name, employer_city, website)
 VALUES (%s, %s, %s, %s)

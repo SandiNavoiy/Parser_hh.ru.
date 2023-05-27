@@ -39,7 +39,7 @@ class DBManage:
         self.connect_to_database()
         # Запрос SQL
         self.cur.execute("CREATE TABLE IF NOT EXISTS employers "
-                         "(employer_id INTEGER PRIMARY KEY, "
+                         "(employer_id SERIAL PRIMARY KEY, "
                          "name VARCHAR(255), "
                          "employer_city TEXT, "
                          "website VARCHAR(255))")
@@ -48,24 +48,25 @@ class DBManage:
                          "employer_id INTEGER,"
                          "title VARCHAR(255), "
                          "salary INTEGER, "
-                         "link VARCHAR(255))"
+                         "link VARCHAR(255), "
+                         "FOREIGN KEY (employer_id) REFERENCES employers (employer_id))"
                          )
 
-    def insert_employer(self, employer_id, name, description, website):
+    def insert_employer(self, name, description, website):
         """"Вставка данных о работодателе в таблицу employers"""
         self.connect_to_database()
         # Запрос SQL
-        # RETURNING id
+
         self.cur.execute(
             """
-            INSERT INTO employers (employer_id, name, employer_city, website)
-            VALUES (%s, %s, %s, %s)
+            INSERT INTO employers ( name, employer_city, website)
+            VALUES ( %s, %s, %s)
             
             """,
-            (employer_id, name, description, website)
+            (name, description, website)
         )
-        # employer_id = self.cur.fetchone()[0]
-        # return employer_id
+
+
 
     def insert_vacancy(self, vacancy_id, employer_id, title, salary, link):
         """Вставка данных о вакансии в таблицу vacancies"""

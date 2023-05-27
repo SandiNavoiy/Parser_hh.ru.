@@ -215,25 +215,4 @@ if __name__ == '__main__':
 
 
 
-def employees(file_mame):
-    """"""
-    with open(os.path.join(file_mame), 'r') as f:
-        reader = csv.reader(f)
-        next(reader)
-        conn = psycopg2.connect(dbname="north", user="postgres", password="1", host="localhost")
-        cur = conn.cursor()
-        id_emp = 1
-        for row in reader:
-            cur.execute("INSERT INTO employees (id_emp, first_name, last_name, title, birth_date, notes) VALUES (%s, %s, %s, %s, %s, %s)",
-                        (id_emp, row[0], row[1], row[2], row[3], row[4]))
-            id_emp += 1
-
-    conn.commit()
-    cur.close()
-    conn.close()
-
-
-
-customers("north_data/customers_data.csv")
-employees("north_data/employees_data.csv")
-orders("north_data/orders_data.csv")
+data.csv")

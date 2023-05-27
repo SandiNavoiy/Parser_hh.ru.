@@ -66,19 +66,21 @@ def interact_with_user():
 
             elif choice == "3":
                 # Заполняем таблицы данными
-                data = json_reader()
-                for item in data['items']:
-                    employer = item['employer']
-                    employer_name = employer['name']
-                    employer_description = employer['description']
-                    employer_website = employer['alternate_url']
-                    employer_id = db_manager.insert_employer(employer_name, employer_description, employer_website)
-
-                    vacancy = item['name']
-                    vacancy_salary = item['salary']
-                    vacancy_link = item['alternate_url']
-
-                    db_manager.insert_vacancy(employer_id, vacancy, vacancy_salary, vacancy_link)
+                try:
+                    data = json_reader()
+                except FileNotFoundError:
+                    print("Нет файла, загрузите вакансии с сайта")
+                else:
+                    for item in data['items']:
+                        employer = item['employer']
+                        employer_name = employer['name']
+                        employer_description = employer['description']
+                        employer_website = employer['alternate_url']
+                        employer_id = db_manager.insert_employer(employer_name, employer_description, employer_website)
+                        vacancy = item['name']
+                        vacancy_salary = item['salary']
+                        vacancy_link = item['alternate_url']
+                        db_manager.insert_vacancy(employer_id, vacancy, vacancy_salary, vacancy_link)
 
 
             elif choice == "4":

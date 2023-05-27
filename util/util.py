@@ -61,13 +61,11 @@ def interact_with_user():
                 # Сразу формируем список вакансий для работы,
                 # чтобы не прописывать в дальнейшем в каждом варианте
 
-
             elif choice == "2":
                 # создаем базу данных и таблицы
                 db_manager.create_database()
                 db_manager.create_tables()
                 print(f"База данных {name_db} и таблицы employers и vacancies созданы")
-
 
             elif choice == "3":
                 # Заполняем БД данными
@@ -90,7 +88,7 @@ def interact_with_user():
                                 employer_website = item['employer']['alternate_url']
                                 # Грузим в БД в таблицу employer
                                 db_manager.insert_employer(employer_id, employer_name, employer_description,
-                                                                         employer_website)
+                                                           employer_website)
                                 vacancy = item['name']
                                 vacancy_id = item['id']
                                 try:
@@ -100,12 +98,13 @@ def interact_with_user():
                                     vacancy_salary = 0
                                 vacancy_link = item['alternate_url']
                                 # Грузим в БД в таблицу vacancy
-                                db_manager.insert_vacancy(vacancy_id, employer_id, vacancy, vacancy_salary, vacancy_link)
+                                db_manager.insert_vacancy(vacancy_id, employer_id, vacancy, vacancy_salary,
+                                                          vacancy_link)
                         except psycopg2.errors.UniqueViolation:
-                            print("Данные уже занесены, повторно не требуется, или удалите и заново создайте таблицу и БД")
+                            print(
+                                "Данные уже занесены, повторно не требуется, или удалите и заново создайте таблицу и БД")
 
                         print("Таблицы успешно заполнены")
-
 
             elif choice == "4":
                 # Вывод всех вакансий
@@ -126,7 +125,6 @@ def interact_with_user():
                             print(f"Salary: {salary}")
                             print(f"Link: {link}")
                             print()
-
 
             elif choice == "5":
                 # Средняя залплата по вакансиям
@@ -162,7 +160,6 @@ def interact_with_user():
                             print(f"Зарплата: {salary}")
                             print(f"Ссылка: {link}")
                             print()
-
 
             elif choice == "7":
                 # Вывод списка всех вакансий, в названии которых содержатся ключевое слово
@@ -202,7 +199,6 @@ def interact_with_user():
                         for company, count in companies_and_vacancies_count:
                             print(f"{company}: {count}")
 
-
             elif choice == "9":
                 # Выход
                 db_manager.close_connection()
@@ -211,7 +207,6 @@ def interact_with_user():
                       "До новых встреч!")
                 print("--------------")
                 break
-
 
             else:
                 print("Введите правильное значение действий!!!!")
@@ -242,10 +237,10 @@ def json_reader():
 
 
 def create_database(params: dict):
+    """Для первичного создания БД"""
     conn = psycopg2.connect(dbname='postgres', **params)
     conn.autocommit = True
     cur = conn.cursor()
-
     cur.execute(f"CREATE DATABASE hh")
     cur.close()
     conn.close()

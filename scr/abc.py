@@ -12,4 +12,3 @@ class Employer(ABC):
     @abstractmethod
     def get_vacancies(self):
         pass
-

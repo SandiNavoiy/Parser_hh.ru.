@@ -82,25 +82,29 @@ def interact_with_user():
                         # Проверка наличие таблицы
                         print("Нет таблиц, создайте - пункт 2")
                     else:
-                        for item in data['items']:
-                            employer_id = item['id']
-                            employer_name = item['employer']['name']
-                            employer_description = item['area']['name']
-                            employer_website = item['employer']['alternate_url']
-                            # Грузим в БД в таблицу employer
-                            db_manager.insert_employer(employer_id, employer_name, employer_description,
-                                                                     employer_website)
-                            vacancy = item['name']
-                            vacancy_id = item['id']
-                            try:
-                                # Заполняем и проверяем случай если з/п не указана
-                                vacancy_salary = int(item['salary']['from'])
-                            except TypeError:
-                                vacancy_salary = 0
-                            vacancy_link = item['alternate_url']
-                            # Грузим в БД в таблицу vacancy
-                            db_manager.insert_vacancy(vacancy_id, employer_id, vacancy, vacancy_salary, vacancy_link)
-                    print("Таблицы успешно заполнены")
+                        try:
+                            for item in data['items']:
+                                employer_id = item['id']
+                                employer_name = item['employer']['name']
+                                employer_description = item['area']['name']
+                                employer_website = item['employer']['alternate_url']
+                                # Грузим в БД в таблицу employer
+                                db_manager.insert_employer(employer_id, employer_name, employer_description,
+                                                                         employer_website)
+                                vacancy = item['name']
+                                vacancy_id = item['id']
+                                try:
+                                    # Заполняем и проверяем случай если з/п не указана
+                                    vacancy_salary = int(item['salary']['from'])
+                                except TypeError:
+                                    vacancy_salary = 0
+                                vacancy_link = item['alternate_url']
+                                # Грузим в БД в таблицу vacancy
+                                db_manager.insert_vacancy(vacancy_id, employer_id, vacancy, vacancy_salary, vacancy_link)
+                        except psycopg2.errors.UniqueViolation:
+                            print("Данные уже занесены, повторно не требуется, или удалите и заново создайте таблицу и БД")
+
+                        print("Таблицы успешно заполнены")
 
 
             elif choice == "4":

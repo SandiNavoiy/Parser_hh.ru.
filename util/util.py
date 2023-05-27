@@ -30,15 +30,20 @@ def interact_with_user():
         db_manager = DBManage(name_db, params)
     except psycopg2.OperationalError:
         print("Ошибка подключенния к базе данных")
+        print(f"Пытаемся создать БД с названием {name_db}")
+        try:
+            create_database(params)
+            print("Перезапустите программу")
+        except psycopg2.OperationalError:
+            print("Проверьте фаерволл")
+
     else:
-
-
 
         while True:
             # Запускаем бесконечный цикл для работы меню
             print("Выберите действие:")
             print("1 - Загрузить свежую информацию с hh.ru")
-            print("2 - Создание базы данных ")
+            print("2 - Перевоздание базы данных и таблиц ")
             print("3 - Заполняем таблицы данными")
             print("4 - Вывод всех вакансий")
             print("5 - Вывод средней залплаты")
@@ -72,69 +77,99 @@ def interact_with_user():
                 except FileNotFoundError:
                     print("Нет файла, загрузите вакансии с сайта")
                 else:
-                    for item in data['items']:
+                    try:
+                        db_manager.error_table()
+                    except psycopg2.errors.UndefinedTable:
+                        print("Нет таблиц, создайте")
+                    else:
+                        for item in data['items']:
 
-                        employer_name = item['employer']['name']
-                        employer_description = item['employer']['name']
-                        employer_website = item['employer']['alternate_url']
-                        employer_id = db_manager.insert_employer(employer_name, employer_description, employer_website)
+                            employer_name = item['employer']['name']
+                            employer_description = item['employer']['name']
+                            employer_website = item['employer']['alternate_url']
+                            employer_id = db_manager.insert_employer(employer_name, employer_description, employer_website)
 
-                        vacancy = item['name']
-                        try:
-                            vacancy_salary = int(item['salary']['from'])
-                        except TypeError:
-                            vacancy_salary = 0
-                        vacancy_link = item['alternate_url']
+                            vacancy = item['name']
+                            try:
+                                vacancy_salary = int(item['salary']['from'])
+                            except TypeError:
+                                vacancy_salary = 0
+                            vacancy_link = item['alternate_url']
 
-                        db_manager.insert_vacancy(employer_id, vacancy, vacancy_salary, vacancy_link)
+                            db_manager.insert_vacancy(employer_id, vacancy, vacancy_salary, vacancy_link)
 
-                    print("Таблицы успешно заполнены")
+                        print("Таблицы успешно заполнены")
 
 
             elif choice == "4":
                 # Вывод вакансий в упрошенном виде с сортировкой
-                all_vacancies = db_manager.get_all_vacancies()
-                for company, title, salary, link in all_vacancies:
-                    print(f"Company: {company}")
-                    print(f"Title: {title}")
-                    print(f"Salary: {salary}")
-                    print(f"Link: {link}")
-                    print()
+                try:
+                    db_manager.error_table()
+                except psycopg2.errors.UndefinedTable:
+                    print("Нет таблиц, создайте")
+                else:
+                    all_vacancies = db_manager.get_all_vacancies()
+                    for company, title, salary, link in all_vacancies:
+                        print(f"Company: {company}")
+                        print(f"Title: {title}")
+                        print(f"Salary: {salary}")
+                        print(f"Link: {link}")
+                        print()
 
 
             elif choice == "5":
                 # Средняя залплата по вакансиям
-                avg_salary = db_manager.get_avg_salary()
-                print("Средняя зарплата(без учета нулевых значений по вакансиям:", avg_salary)
+                try:
+                    db_manager.error_table()
+                except psycopg2.errors.UndefinedTable:
+                    print("Нет таблиц, создайте")
+                else:
+                    avg_salary = db_manager.get_avg_salary()
+                    print("Средняя зарплата(без учета нулевых значений по вакансиям:", avg_salary)
 
             elif choice == "6":
                 #список всех вакансий, у которых зарплата выше средней по всем вакансиям
-                vacancies_with_higher_salary = db_manager.get_vacancies_with_higher_salary()
-                for company, title, salary, link in vacancies_with_higher_salary:
-                    print(f"Работодатель: {company}")
-                    print(f"Описание: {title}")
-                    print(f"Зарплата: {salary}")
-                    print(f"Ссылка: {link}")
-                    print()
+                try:
+                    db_manager.error_table()
+                except psycopg2.errors.UndefinedTable:
+                    print("Нет таблиц, создайте")
+                else:
+                    vacancies_with_higher_salary = db_manager.get_vacancies_with_higher_salary()
+                    for company, title, salary, link in vacancies_with_higher_salary:
+                        print(f"Работодатель: {company}")
+                        print(f"Описание: {title}")
+                        print(f"Зарплата: {salary}")
+                        print(f"Ссылка: {link}")
+                        print()
 
 
             elif choice == "7":
                 # Вывод списка всех вакансий, в названии которых содержатся ключевое слово
-                keyword =  input("Введите ключевое слово")
-                vacancies_with_keyword = db_manager.get_vacancies_with_keyword(keyword)
-                for company, title, salary, link in vacancies_with_keyword:
-                    print(f"Работодатель: {company}")
-                    print(f"Описание: {title}")
-                    print(f"Зарплата: {salary}")
-                    print(f"Ссылка: {link}")
-                    print()
+                try:
+                    db_manager.error_table()
+                except psycopg2.errors.UndefinedTable:
+                    print("Нет таблиц, создайте")
+                else:
+                    keyword =  input("Введите ключевое слово")
+                    vacancies_with_keyword = db_manager.get_vacancies_with_keyword(keyword)
+                    for company, title, salary, link in vacancies_with_keyword:
+                        print(f"Работодатель: {company}")
+                        print(f"Описание: {title}")
+                        print(f"Зарплата: {salary}")
+                        print(f"Ссылка: {link}")
+                        print()
 
             elif choice == "8":
                 # список всех компаний и количество вакансий у каждой компании
-                companies_and_vacancies_count = db_manager.get_companies_and_vacancies_count()
-                print("Компания и количество вакансий:")
-                for company, count in companies_and_vacancies_count:
-                    print(f"{company}: {count}")
+                try:
+                    db_manager.error_table()
+                except psycopg2.errors.UndefinedTable:
+                    print("Нет таблиц, создайте")
+                else:
+                    companies_and_vacancies_count = db_manager.get_companies_and_vacancies_count()
+                    print("Компания и количество вакансий:")
+                    for company, count in companies_and_vacancies_count:
+                        print(f"{company}: {count}")
 
 
             elif choice == "9":
@@ -149,6 +184,9 @@ def interact_with_user():
 
             else:
                 print("Введите правильное значение действий!!!!")
+
+
+
 
 
 
@@ -174,6 +212,15 @@ def json_reader():
     with open("hh.json", 'r', encoding="utf-8") as file:
         data = json.load(file)
     return data
+
+def create_database(params: dict):
+    conn = psycopg2.connect(dbname='postgres', **params)
+    conn.autocommit = True
+    cur = conn.cursor()
+    cur.execute(f"DROP DATABASE  IF EXISTS hh")
+    cur.execute(f"CREATE DATABASE hh")
+    conn.close()
+
 
 
 

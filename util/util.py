@@ -65,6 +65,7 @@ def interact_with_user():
 
             elif choice == "2":
                 # создаем базу данных и таблицы
+
                 db_manager.create_database()
                 db_manager.create_tables()
                 print(f"База данных {name_db} и таблицы employers и vacancies созданы")
@@ -80,7 +81,7 @@ def interact_with_user():
                     try:
                         db_manager.error_table()
                     except psycopg2.errors.UndefinedTable:
-                        print("Нет таблиц, создайте")
+                        print("Нет таблиц, создайте - пункт 2")
                     else:
                         for item in data['items']:
 
@@ -106,7 +107,7 @@ def interact_with_user():
                 try:
                     db_manager.error_table()
                 except psycopg2.errors.UndefinedTable:
-                    print("Нет таблиц, создайте")
+                    print("Нет таблиц, создайте - пункт 2")
                 else:
                     all_vacancies = db_manager.get_all_vacancies()
                     for company, title, salary, link in all_vacancies:
@@ -122,7 +123,7 @@ def interact_with_user():
                 try:
                     db_manager.error_table()
                 except psycopg2.errors.UndefinedTable:
-                    print("Нет таблиц, создайте")
+                    print("Нет таблиц, создайте - пункт 2")
                 else:
                     avg_salary = db_manager.get_avg_salary()
                     print("Средняя зарплата(без учета нулевых значений по вакансиям:", avg_salary)
@@ -132,7 +133,7 @@ def interact_with_user():
                 try:
                     db_manager.error_table()
                 except psycopg2.errors.UndefinedTable:
-                    print("Нет таблиц, создайте")
+                    print("Нет таблиц, создайте - пункт 2")
                 else:
                     vacancies_with_higher_salary = db_manager.get_vacancies_with_higher_salary()
                     for company, title, salary, link in vacancies_with_higher_salary:
@@ -148,7 +149,7 @@ def interact_with_user():
                 try:
                     db_manager.error_table()
                 except psycopg2.errors.UndefinedTable:
-                    print("Нет таблиц, создайте")
+                    print("Нет таблиц, создайте - пункт 2")
                 else:
                     keyword =  input("Введите ключевое слово")
                     vacancies_with_keyword = db_manager.get_vacancies_with_keyword(keyword)
@@ -164,7 +165,7 @@ def interact_with_user():
                 try:
                     db_manager.error_table()
                 except psycopg2.errors.UndefinedTable:
-                    print("Нет таблиц, создайте")
+                    print("Нет таблиц, создайте - пункт 2")
                 else:
                     companies_and_vacancies_count = db_manager.get_companies_and_vacancies_count()
                     print("Компания и количество вакансий:")
@@ -217,8 +218,9 @@ def create_database(params: dict):
     conn = psycopg2.connect(dbname='postgres', **params)
     conn.autocommit = True
     cur = conn.cursor()
-    cur.execute(f"DROP DATABASE  IF EXISTS hh")
+
     cur.execute(f"CREATE DATABASE hh")
+    cur.close()
     conn.close()
 
 

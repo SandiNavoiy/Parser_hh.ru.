@@ -19,11 +19,26 @@ class DBManage:
 
     def create_database(self):
         """Создание базы данных """
+        self.conn.close()  # Закрыть текущее соединение
+
+        # Создать новое соединение для выполнения операций создания и удаления базы данных
+        conn_temp = psycopg2.connect(dbname='postgres', **self.params)
+        conn_temp.autocommit = True
+        cur_temp = conn_temp.cursor()
+
+        # Удалить базу данных, если она существует
+        cur_temp.execute(f"DROP DATABASE IF EXISTS {self.database_name}")
+        # Создать базу данных
+        cur_temp.execute(f"CREATE DATABASE {self.database_name}")
+
+        # Закрыть временное соединение
+        cur_temp.close()
+        conn_temp.close()
+
+        # Подключиться заново к базе данных
         self.connect_to_database()
-        self.cur.execute(f"DROP DATABASE  IF EXISTS {self.database_name}")
-        self.cur.execute(f"CREATE DATABASE {self.database_name}")
-        self.conn.close()
-        self.connect_to_database()
+
+
 
     def create_tables(self):
         """Создание таблиц для работодателей и вакансий"""
@@ -150,6 +165,7 @@ class DBManage:
     def error_table(self):
         """Отлов ошибки отсудствия таблиц, чтоб не ломать код"""
         self.connect_to_database()
+
         self.cur.execute(
             """
             SELECT * 

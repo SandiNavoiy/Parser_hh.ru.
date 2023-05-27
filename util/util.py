@@ -44,7 +44,8 @@ def interact_with_user():
             print("5 - Вывод средней залплаты")
             print("6 - Список всех вакансий, у которых зарплата выше средней по всем вакансиям")
             print("7 - Вывод списка всех вакансий, в названии которых содержатся ключевое слово")
-            print("8 - Выйти")
+            print("8 - Cписок всех компаний и количество вакансий у каждой компании")
+            print("9 - Выйти")
             choice = input("Введите значение---")
 
 
@@ -72,39 +73,71 @@ def interact_with_user():
                     print("Нет файла, загрузите вакансии с сайта")
                 else:
                     for item in data['items']:
-                        employer = item['employer']
-                        employer_name = employer['name']
-                        employer_description = employer['description']
-                        employer_website = employer['alternate_url']
+
+                        employer_name = item['employer']['name']
+                        employer_description = item['employer']['name']
+                        employer_website = item['employer']['alternate_url']
                         employer_id = db_manager.insert_employer(employer_name, employer_description, employer_website)
+
                         vacancy = item['name']
-                        vacancy_salary = item['salary']
+                        try:
+                            vacancy_salary = int(item['salary']['from'])
+                        except TypeError:
+                            vacancy_salary = 0
                         vacancy_link = item['alternate_url']
+
                         db_manager.insert_vacancy(employer_id, vacancy, vacancy_salary, vacancy_link)
+
+                    print("Таблицы успешно заполнены")
 
 
             elif choice == "4":
                 # Вывод вакансий в упрошенном виде с сортировкой
-                db_manager.get_all_vacancies()
+                all_vacancies = db_manager.get_all_vacancies()
+                for company, title, salary, link in all_vacancies:
+                    print(f"Company: {company}")
+                    print(f"Title: {title}")
+                    print(f"Salary: {salary}")
+                    print(f"Link: {link}")
+                    print()
 
 
             elif choice == "5":
                 # Средняя залплата по вакансиям
-                db_manager.get_avg_salary
-
+                avg_salary = db_manager.get_avg_salary()
+                print("Средняя зарплата(без учета нулевых значений по вакансиям:", avg_salary)
 
             elif choice == "6":
                 #список всех вакансий, у которых зарплата выше средней по всем вакансиям
-                db_manager.get_vacancies_with_higher_salary()
+                vacancies_with_higher_salary = db_manager.get_vacancies_with_higher_salary()
+                for company, title, salary, link in vacancies_with_higher_salary:
+                    print(f"Работодатель: {company}")
+                    print(f"Описание: {title}")
+                    print(f"Зарплата: {salary}")
+                    print(f"Ссылка: {link}")
+                    print()
 
 
             elif choice == "7":
                 # Вывод списка всех вакансий, в названии которых содержатся ключевое слово
                 keyword =  input("Введите ключевое слово")
-                db_manager.get_vacancies_with_keyword(keyword)
-
+                vacancies_with_keyword = db_manager.get_vacancies_with_keyword(keyword)
+                for company, title, salary, link in vacancies_with_keyword:
+                    print(f"Работодатель: {company}")
+                    print(f"Описание: {title}")
+                    print(f"Зарплата: {salary}")
+                    print(f"Ссылка: {link}")
+                    print()
 
             elif choice == "8":
+                # список всех компаний и количество вакансий у каждой компании
+                companies_and_vacancies_count = db_manager.get_companies_and_vacancies_count()
+                print("Компания и количество вакансий:")
+                for company, count in companies_and_vacancies_count:
+                    print(f"{company}: {count}")
+
+
+            elif choice == "9":
                 # Выход
                 db_manager.close_connection()
                 print("--------------")
@@ -138,7 +171,7 @@ def config(filename="database.ini", section="postgresql"):
 
 def json_reader():
     """    Читает данные из json файла"""
-    with open("hh.json", 'r') as file:
+    with open("hh.json", 'r', encoding="utf-8") as file:
         data = json.load(file)
     return data
 

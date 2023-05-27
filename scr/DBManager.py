@@ -48,8 +48,8 @@ class DBManage:
                          "employer_id INTEGER,"
                          "title VARCHAR(255), "
                          "salary INTEGER, "
-                         "link VARCHAR(255), "
-                         "FOREIGN KEY (employer_id) REFERENCES employers (employer_id))")
+                         "link VARCHAR(255))"
+                         )
 
     def insert_employer(self, employer_id, name, description, website):
         """"Вставка данных о работодателе в таблицу employers"""

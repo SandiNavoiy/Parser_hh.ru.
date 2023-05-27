@@ -82,7 +82,7 @@ def interact_with_user():
                     else:
                         try:
                             for item in data['items']:
-                                employer_id = item['id']
+                                employer_id = item['employer']['id']
                                 employer_name = item['employer']['name']
                                 employer_description = item['area']['name']
                                 employer_website = item['employer']['alternate_url']
@@ -207,6 +207,15 @@ def interact_with_user():
                       "До новых встреч!")
                 print("--------------")
                 break
+
+            elif choice == "11":
+                # Выход
+                c = json_reader()
+                h = 0
+                for i in c["items"]:
+                    h = h +1
+                    print(i)
+                print(h)
 
             else:
                 print("Введите правильное значение действий!!!!")

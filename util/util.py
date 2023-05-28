@@ -81,16 +81,14 @@ def interact_with_user():
                         print("Нет таблиц, создайте - пункт 2")
                     else:
                         try:
-                            conn_temp = psycopg2.connect(dbname='postgres', **params)
-                            conn_temp.autocommit = True
-                            cur_temp = conn_temp.cursor()
+
                             for item in data["items"]:
                                 employer_id = item["employer"]["id"]
                                 employer_name = item["employer"]["name"]
                                 employer_description = item["area"]["name"]
                                 employer_website = item["employer"]["alternate_url"]
                                 # Грузим в БД в таблицу employer
-                                db_manager.insert_employer( employer_name, employer_description,
+                                db_manager.insert_employer(employer_id, employer_name, employer_description,
                                                            employer_website)
                                 vacancy = item["name"]
                                 vacancy_id = item['id']

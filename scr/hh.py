@@ -11,19 +11,18 @@ class HeadHunterAPI(Employer):
     def __init__(self):
         """Инициация класса, атрибутом URL"""
         self.__url = 'https://api.hh.ru/employers/'
+        self.params = params = {
 
+            'area': 1,
+            'per_page': 20,  # Кол-во вакансий на 1 странице
+            'only_with_vacancies': 'true'
+        }
 
     def get_employers(self):
         """Метод работы и получения данных от API hh о работадателях"""
 
-        params = {
-
-            'area': 1,
-            'per_page': 100,  # Кол-во вакансий на 1 странице
-            'only_with_vacancies': 'true'
-        }
         try:
-            self.req = requests.get(self.__url, params).json()
+            self.req = requests.get(self.__url, self.params).json()
         except requests.exceptions.RequestException as e:
             print(f"Нет соединения, ошибка{e}. СМЕНИ РЕГИОН VPN!! ")
         else:
@@ -34,20 +33,13 @@ class HeadHunterAPI(Employer):
     def __repr__(self):
         """Метод вывода полученой информации"""
         return self.req
-    def get_vacancies(self,url_vac):
-        """Метод работы и получения данных от API hh о работадателях"""
-        vacancies_data = {'items': []}
-        params = {
 
-            'area': 1,
-            'per_page': 100,  # Кол-во вакансий на 1 странице
-            'only_with_vacancies': 'true'
-        }
+    def get_vacancies(self, url_vac):
+        """Метод работы и получения данных от API hh по работодателю о вакансиях"""
         try:
-            response = requests.get(url_vac, params).json()
+            response = requests.get(url_vac, self.params).json()
         except requests.exceptions.RequestException as e:
             print(f"Нет соединения, ошибка{e}. СМЕНИ РЕГИОН VPN!! ")
         else:
-            #data = response.json()
-            #vacancies_data['items'].extend(data['items'])
+
             return response

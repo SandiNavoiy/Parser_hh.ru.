@@ -56,7 +56,6 @@ class DBManage:
         """"Вставка данных о работодателе в таблицу employers"""
         self.connect_to_database()
         # Запрос SQL
-
         self.cur.execute(
             """
             INSERT INTO employers (employer_id, name, description, website)
@@ -65,8 +64,6 @@ class DBManage:
             """,
             (employer_id, name, description, website)
         )
-
-
 
     def insert_vacancy(self, vacancy_id, employer_id, title, salary, link):
         """Вставка данных о вакансии в таблицу vacancies"""

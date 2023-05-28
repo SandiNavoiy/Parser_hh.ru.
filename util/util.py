@@ -56,7 +56,7 @@ def interact_with_user():
             # Непосредствено работы меню выбора
             if choice == "1":
                 # Загружаем информацию с hh
-                #key_words = input("Введите ключевое слово поисков:   ")
+                # key_words = input("Введите ключевое слово поисков:   ")
                 hh_api.get_employers()
                 # Сразу формируем список вакансий для работы,
                 # чтобы не прописывать в дальнейшем в каждом варианте
@@ -81,7 +81,7 @@ def interact_with_user():
                         print("Нет таблиц, создайте - пункт 2")
                     else:
                         try:
-
+                            # Заполняем таблицу работодатели по employer_id
                             for item in data["items"]:
                                 employer_id = item["id"]
                                 employer_name = item["name"]
@@ -90,9 +90,9 @@ def interact_with_user():
                                 # Грузим в БД в таблицу employer
                                 db_manager.insert_employer(employer_id, employer_name, employer_description,
                                                            employer_website)
+                                # Передаем ссылку о вакансиях конкретного работодателя для заполнения таблица вакансий
                                 vac = hh_api.get_vacancies(employer_description)
                                 for item1 in vac["items"]:
-
                                     vacancy = item1["name"]
                                     vacancy_id = item1['id']
                                     try:
@@ -105,7 +105,8 @@ def interact_with_user():
                                     db_manager.insert_vacancy(vacancy_id, employer_id, vacancy, vacancy_salary,
                                                               vacancy_link)
                         except psycopg2.errors.UniqueViolation:
-                            print("Данные уже занесены, повторно не требуется, или удалите и заново создайте таблицу и БД")
+                            print(
+                                "Данные уже занесены, повторно не требуется, или удалите и заново создайте таблицу и БД")
                         else:
                             print("Таблицы успешно заполнены")
 
@@ -210,15 +211,6 @@ def interact_with_user():
                       "До новых встреч!")
                 print("--------------")
                 break
-
-            elif choice == "11":
-                # Выход
-                c = json_reader()
-                h = 0
-                for i in c["items"]:
-                    h = h +1
-                    print(i)
-                print(h)
 
             else:
                 print("Введите правильное значение действий!!!!")

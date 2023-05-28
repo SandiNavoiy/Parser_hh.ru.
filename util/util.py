@@ -85,22 +85,25 @@ def interact_with_user():
                             for item in data["items"]:
                                 employer_id = item["id"]
                                 employer_name = item["name"]
-                                employer_description_vacancy = item["vacancies_url"]
+                                employer_description = item["vacancies_url"]
                                 employer_website = item["alternate_url"]
                                 # Грузим в БД в таблицу employer
-                                db_manager.insert_employer(employer_id, employer_name, employer_description_vacancy,
+                                db_manager.insert_employer(employer_id, employer_name, employer_description,
                                                            employer_website)
-                                vacancy = item["name"]
-                                vacancy_id = item['id']
-                                try:
-                                    # Заполняем и проверяем случай если з/п не указана
-                                    vacancy_salary = int(item["salary"]["from"])
-                                except TypeError:
-                                    vacancy_salary = 0
-                                vacancy_link = item["alternate_url"]
-                                # Грузим в БД в таблицу vacancy
-                                db_manager.insert_vacancy(vacancy_id, employer_id, vacancy, vacancy_salary,
-                                                          vacancy_link)
+                                vac = hh_api.get_vacancies(employer_description)
+                                for item1 in vac["items"]:
+
+                                    vacancy = item1["name"]
+                                    vacancy_id = item1['id']
+                                    try:
+                                        # Заполняем и проверяем случай если з/п не указана
+                                        vacancy_salary = int(item1["salary"]["from"])
+                                    except TypeError:
+                                        vacancy_salary = 0
+                                    vacancy_link = item1["alternate_url"]
+                                    # Грузим в БД в таблицу vacancy
+                                    db_manager.insert_vacancy(vacancy_id, employer_id, vacancy, vacancy_salary,
+                                                              vacancy_link)
                         except psycopg2.errors.UniqueViolation:
                             print("Данные уже занесены, повторно не требуется, или удалите и заново создайте таблицу и БД")
                         else:

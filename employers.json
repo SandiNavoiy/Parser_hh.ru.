@@ -1,13 +1,96 @@
 {
-  "employers_ids": [
-    "2686590",
-    "15478",
-    "1057",
-    "139",
-    "1740",
-    "2381",
-    "80",
-    "2987",
-    "733",
-    "6093775"
-  ]
+  "items": [
+    {
+      "id": "80615788",
+      "premium": false,
+      "name": "Брокер/консультант по торговой недвижимости",
+      "department": null,
+      "has_test": false,
+      "response_letter_required": false,
+      "area": {
+        "id": "1",
+        "name": "Москва",
+        "url": "https://api.hh.ru/areas/1"
+      },
+      "salary": {
+        "from": 100000,
+        "to": 200000,
+        "currency": "RUR",
+        "gross": false
+      },
+      "type": {
+        "id": "open",
+        "name": "Открытая"
+      },
+      "address": {
+        "city": null,
+        "street": null,
+        "building": null,
+        "lat": null,
+        "lng": null,
+        "description": null,
+        "raw": "Москва, улица Пречистенка, д. 40/2 стр.1",
+        "metro": null,
+        "metro_stations": [],
+        "id": "238111"
+      },
+      "response_url": null,
+      "sort_point_distance": null,
+      "published_at": "2023-05-17T18:18:36+0300",
+      "created_at": "2023-05-17T18:18:36+0300",
+      "archived": false,
+      "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=80615788",
+      "insider_interview": null,
+      "url": "https://api.hh.ru/vacancies/80615788?host=hh.ru",
+      "adv_response_url": null,
+      "alternate_url": "https://hh.ru/vacancy/80615788",
+      "relations": [],
+      "employer": {
+        "id": "36227",
+        "name": "000 МАГАЗИН МАГАЗИНОВ - Эксперт по торговой недвижимости",
+        "url": "https://api.hh.ru/employers/36227",
+        "alternate_url": "https://hh.ru/employer/36227",
+        "logo_urls": {
+          "240": "https://hhcdn.ru/employer-logo/2419770.png",
+          "90": "https://hhcdn.ru/employer-logo/2419769.png",
+          "original": "https://hhcdn.ru/employer-logo-original/494504.png"
+        },
+        "vacancies_url": "https://api.hh.ru/vacancies?employer_id=36227",
+        "accredited_it_employer": false,
+        "trusted": true
+      },
+      "snippet": {
+        "requirement": "Опыт работы в недвижимости от 1 года. Опыт самостоятельного закрытия сделок. Опыт работы с договорами аренды и ведения переговоров. ",
+        "responsibility": "Поиск и привлечение арендаторов для сдачи в аренду помещений в торговых центрах / street retail. Представление интересов собственников по сдаче в..."
+      },
+      "contacts": null,
+      "schedule": null,
+      "working_days": [],
+      "working_time_intervals": [],
+      "working_time_modes": [],
+      "accept_temporary": false,
+      "professional_roles": [
+        {
+          "id": "6",
+          "name": "Агент по недвижимости"
+        }
+      ],
+      "accept_incomplete_resumes": false,
+      "experience": {
+        "id": "between1And3",
+        "name": "От 1 года до 3 лет"
+      },
+      "employment": {
+        "id": "full",
+        "name": "Полная занятость"
+      }
+    }
+  ],
+  "found": 1,
+  "pages": 1,
+  "per_page": 20,
+  "page": 0,
+  "clusters": null,
+  "arguments": null,
+  "alternate_url": "https://hh.ru/search/vacancy?employer_id=36227&enable_snippets=true"
+}

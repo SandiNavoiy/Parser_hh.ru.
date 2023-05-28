@@ -85,7 +85,7 @@ def interact_with_user():
                             conn_temp.autocommit = True
                             cur_temp = conn_temp.cursor()
                             for item in data["items"]:
-
+                                employer_id = item["employer"]["id"]
                                 employer_name = item["employer"]["name"]
                                 employer_description = item["area"]["name"]
                                 employer_website = item["employer"]["alternate_url"]
@@ -100,15 +100,6 @@ def interact_with_user():
                                 except TypeError:
                                     vacancy_salary = 0
                                 vacancy_link = item["alternate_url"]
-                                cur_temp.execute(
-                                    """
-                                    SELECT employer_id FROM employers WHERE name = %s
-                                    """,
-                                    (employer_name,)
-                                )
-                                result = cur_temp.fetchone()
-                                if result:
-                                    employer_id = result[0]
                                 # Грузим в БД в таблицу vacancy
                                 db_manager.insert_vacancy(vacancy_id, employer_id, vacancy, vacancy_salary,
                                                           vacancy_link)

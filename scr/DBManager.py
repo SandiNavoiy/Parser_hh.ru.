@@ -41,7 +41,7 @@ class DBManage:
         self.cur.execute("CREATE TABLE IF NOT EXISTS employers "
                          "(employer_id INTEGER PRIMARY KEY, "
                          "name VARCHAR(255), "
-                         "employer_city TEXT, "
+                         "employer_vacancy TEXT, "
                          "website VARCHAR(255))")
         self.cur.execute("CREATE TABLE IF NOT EXISTS vacancies "
                          "(vacancy_id varchar(10) PRIMARY KEY, "

@@ -56,8 +56,8 @@ def interact_with_user():
             # Непосредствено работы меню выбора
             if choice == "1":
                 # Загружаем информацию с hh
-                key_words = input("Введите ключевое слово поисков:   ")
-                hh_api.get_vacancies(key_words)
+                #key_words = input("Введите ключевое слово поисков:   ")
+                hh_api.get_employers()
                 # Сразу формируем список вакансий для работы,
                 # чтобы не прописывать в дальнейшем в каждом варианте
 
@@ -83,12 +83,12 @@ def interact_with_user():
                         try:
 
                             for item in data["items"]:
-                                employer_id = item["employer"]["id"]
-                                employer_name = item["employer"]["name"]
-                                employer_description = item["area"]["name"]
-                                employer_website = item["employer"]["alternate_url"]
+                                employer_id = item["id"]
+                                employer_name = item["name"]
+                                employer_description_vacancy = item["vacancies_url"]
+                                employer_website = item["alternate_url"]
                                 # Грузим в БД в таблицу employer
-                                db_manager.insert_employer(employer_id, employer_name, employer_description,
+                                db_manager.insert_employer(employer_id, employer_name, employer_description_vacancy,
                                                            employer_website)
                                 vacancy = item["name"]
                                 vacancy_id = item['id']

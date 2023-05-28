@@ -10,15 +10,17 @@ class HeadHunterAPI(Employer):
 
     def __init__(self):
         """Инициация класса, атрибутом URL"""
-        self.__url = 'https://api.hh.ru/vacancies'
+        self.__url = 'https://api.hh.ru/employers/'
 
-    def get_vacancies(self, text):
-        """Метод работы и получения данных от API hh"""
-        self.text = text
+
+    def get_employers(self):
+        """Метод работы и получения данных от API hh о работадателях"""
+
         params = {
-            'text': self.text,  # Текст фильтра.
+
             'area': 1,
-            'per_page': 100  # Кол-во вакансий на 1 странице
+            'per_page': 100,  # Кол-во вакансий на 1 странице
+            'only_with_vacancies': 'true'
         }
         try:
             self.req = requests.get(self.__url, params).json()
@@ -32,3 +34,20 @@ class HeadHunterAPI(Employer):
     def __repr__(self):
         """Метод вывода полученой информации"""
         return self.req
+    def get_vacancies(self):
+        """Метод работы и получения данных от API hh о работадателях"""
+
+        params = {
+
+            'area': 1,
+            'per_page': 100,  # Кол-во вакансий на 1 странице
+            'only_with_vacancies': 'true'
+        }
+        try:
+            self.req = requests.get(self.__url, params).json()
+        except requests.exceptions.RequestException as e:
+            print(f"Нет соединения, ошибка{e}. СМЕНИ РЕГИОН VPN!! ")
+        else:
+            print("Информация с hh.ru успешно загружена")
+            with open("hh.json", "w", encoding="utf-8") as f:
+                json.dump(self.req, f, indent=2, ensure_ascii=False)
